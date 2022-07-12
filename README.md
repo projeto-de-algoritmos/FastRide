@@ -16,7 +16,7 @@
 
 ## Screenshots
 
-<!-- Adicionar screenshoots aqui -->
+![scree](./src/img/screenshot.png)
 
 ## Instalação
 
