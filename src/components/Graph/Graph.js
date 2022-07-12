@@ -1,55 +1,57 @@
 import Graph from "react-graph-vis";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import AdjMock from '../../scripts/adj-mock';
-import { buildEdges, buildNodes, getMinRoute } from '../../scripts/graph';
+import AdjMock from "../../scripts/adj-mock";
+import { buildEdges, buildNodes, getMinRoute } from "../../scripts/graph";
 
 export function Area() {
-  var black = true;
-  var green = false;
+  var white = true;
+  var yellow = false;
   var clean = false;
   var inspected;
 
   const changeGraphState = (id) => {
     if (clean) {
       for (var i = 0; i < AdjMock.length; i++) {
-        graph.nodes[i].color = "gray";
+        graph.nodes[i].color = "green";
         graph.nodes[i].label = "";
       }
       clean = false;
     }
 
-    const node = graph.nodes.find(node => { return node.id === id });
+    const node = graph.nodes.find((node) => {
+      return node.id === id;
+    });
     const color = node.color;
 
-    if (color === "gray" && black) {
-      node.color = "black";
-      black = false;
-      green = true;
-    } else if (color === "gray" && green) {
+    if (color === "green" && white) {
+      node.color = "white";
+      white = false;
+      yellow = true;
+    } else if (color === "green" && yellow) {
+      node.color = "yellow";
+      yellow = false;
+    } else if (color === "yellow") {
       node.color = "green";
-      green = false;
-    } else if (color === "green") {
-      node.color = "gray";
-      green = true;
-    } else if (color === "black") {
-      black = true;
-      node.color = "gray";
+      yellow = true;
+    } else if (color === "white") {
+      white = true;
+      node.color = "green";
     } else {
-      node.color = "gray";
+      node.color = "green";
     }
 
     setState(({ graph, ...rest }) => {
       return {
         graph,
-        ...rest
-      }
+        ...rest,
+      };
     });
-  }
+  };
 
   const getShortestRouteByDijkstra = () => {
-    const source = graph.nodes.filter(node => node.color === "black")[0].id;
-    const target = graph.nodes.filter(node => node.color === "green")[0].id;
+    const source = graph.nodes.filter((node) => node.color === "white")[0].id;
+    const target = graph.nodes.filter((node) => node.color === "yellow")[0].id;
 
     var row = [];
     var distance = Array(AdjMock.length);
@@ -67,7 +69,7 @@ export function Area() {
           continue;
         }
 
-        row.push({ from: v, to: u.id, dist: distance[v] + u.weight })
+        row.push({ from: v, to: u.id, dist: distance[v] + u.weight });
       }
 
       let node = getMinRoute(row, inspected);
@@ -85,13 +87,16 @@ export function Area() {
       var cnt = 0;
       while (x !== source) {
         x = inspected[x];
-        cnt++
+        cnt++;
       }
       cnt--;
       x = target;
       while (x !== source) {
         x = inspected[x];
-        if (graph.nodes[x].color !== "black" && graph.nodes[x].color !== "green") {
+        if (
+          graph.nodes[x].color !== "white" &&
+          graph.nodes[x].color !== "yellow"
+        ) {
           graph.nodes[x].color = "rgb(255, 204, 102)";
           graph.nodes[x].label = `${cnt--}`;
           graph.nodes[x].font = "20px arial white";
@@ -103,36 +108,35 @@ export function Area() {
       toast.error("Não há caminho até o destino!");
     }
 
-    green = false;
-    black = true;
+    yellow = false;
+    white = true;
     clean = true;
 
     setState(({ graph, ...rest }) => {
       return {
         graph,
-        ...rest
-      }
+        ...rest,
+      };
     });
-  }
+  };
 
   const [state, setState] = useState({
     counter: 5,
     graph: {
       nodes: buildNodes(),
-      edges: buildEdges()
+      edges: buildEdges(),
     },
     events: {
       selectNode: ({ nodes }) => {
         changeGraphState(nodes[0]);
       },
       doubleClick: () => {
-        if (!green && !black) {
-          getShortestRouteByDijkstra(graph, () => {
-          });
+        if (!yellow && !white) {
+          getShortestRouteByDijkstra(graph, () => {});
         }
-      }
-    }
-  })
+      },
+    },
+  });
 
   const { graph, events } = state;
 
@@ -147,26 +151,26 @@ export function Area() {
             randomSeed: 16,
           },
           edges: {
-            color: "black"
+            color: "black",
           },
           nodes: {
-            fixed: false
+            fixed: false,
           },
           height: "100%",
           interaction: {
             selectConnectedEdges: false,
-            multiselect: true
+            multiselect: true,
           },
           physics: {
-            enabled: false
-          }
+            enabled: false,
+          },
         }}
         events={events}
         style={{
-          width: "90%",
+          width: "100%",
           maxWidth: "35rem",
-          height: "35rem",
-          backgroundColor: "white",
+          height: "45rem",
+          backgroundColor: "#d3ddf0",
           marginLeft: "auto",
           marginRight: "auto",
         }}
@@ -174,4 +178,3 @@ export function Area() {
     </>
   );
 }
-

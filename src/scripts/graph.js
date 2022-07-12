@@ -1,24 +1,27 @@
 import { toast } from "react-toastify";
-import AdjMock from './adj-mock';
+import AdjMock from "./adj-mock";
 
 export const buildNodes = () => {
-  const nodes = []
+  const nodes = [];
   for (var i = 0; i < AdjMock.length; i++) {
-    nodes.push({ id: i, color: "gray" });
+    nodes.push({ id: i, color: "green" });
   }
   return nodes;
-
-}
+};
 
 export const buildEdges = () => {
-  const edges = []
+  const edges = [];
   for (var i = 0; i < AdjMock.length; i++) {
     for (var j = 0; j < AdjMock[i].edges.length; j++) {
-      edges.push({ from: i, to: AdjMock[i].edges[j].id, label: `${AdjMock[i].edges[j].weight}` });
+      edges.push({
+        from: i,
+        to: AdjMock[i].edges[j].id,
+        label: `${AdjMock[i].edges[j].weight}`,
+      });
     }
   }
   return edges;
-}
+};
 
 export const getMinRoute = (row, explored) => {
   var min = 99999;
@@ -42,4 +45,4 @@ export const getMinRoute = (row, explored) => {
   } else {
     return null;
   }
-}
+};
